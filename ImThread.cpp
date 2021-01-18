@@ -1,18 +1,22 @@
-#include "ImFramework.h"
+#include "ImThread.h"
 
-void ImFramework::Init() {
+ImThreadToken* ImThread::DefineThread(std::string name) {
 
+
+
+	return nullptr;
+}
+
+void ImThread::StartThread(ImThreadToken* token) {
 
 }
 
-bool ImFramework::Begin() {
+bool ImThread::IsFinished(ImThreadToken* token) {
 
+	return true;
 }
 
-void ImFramework::End() {
+bool ImThread::HasProgress(void* data) {
 
-}	
-
-ImFrameworkIO ImFramework::GetIO() {
-	return ImFrameworkIO();
+	return true;
 }

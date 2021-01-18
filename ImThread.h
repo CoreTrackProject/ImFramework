@@ -1,23 +1,21 @@
 #pragma once
 
-#include <imgui.h>
+#include <string>
 
-struct ImFrameworkIO {
-	int Width;
-	int Height;
+struct ImThreadToken {
+	int ID = -1;
+	bool RequestCancel = false;
+};
 
-	int WindowX;
-	int WindowY;
-}
-
-class ImFramework {
+class ImThread {
 
 public:
-	static void Init();
+	static ImThreadToken* DefineThread(std::string name);
 
-	static bool Begin();
+	static void StartThread(ImThreadToken* token);
 
-	static void End();	
+	static bool IsFinished(ImThreadToken* token);
 
-	static ImFrameworkIO GetIO();
+	static bool HasProgress(void* data);
+
 };
