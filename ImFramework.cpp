@@ -1,14 +1,11 @@
 #include "ImFramework.h"
 
 
-#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 #include <imgui.h>
 #include <imgui_internal.h>
 
-#include <backends/imgui_impl_glfw.h>
-#include <backends/imgui_impl_opengl3.h>
 
 #include <vector>
 #include <iostream>
@@ -39,8 +36,9 @@ void ImFramework::Destroy() {
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 
+	ImGui::DestroyContext();
+
 	for (auto& io : windows) {
-		ImGui::DestroyContext(io.Context);
 		ImFramework::destroyWindow(io);
 	}
 
@@ -76,26 +74,30 @@ void ImFramework::End() {
 
 void ImFramework::BeginWindow(std::string title, int width, int height) {
 
-	// tmp
-	if (windowIndex >= 1) {
-		std::cerr << "Error, only one Window is currently supported" << std::endl;
-		//std::abort();
-	}
 
 	if (windows.size() <= windowIndex) {
 		ImFramework::createNewWindow(title, width, height);
 	}
 
-	glfwPollEvents();
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	
 
-	ImGui::SetCurrentContext(windows[windowIndex].Context);
 
+	//ImGui_ImplOpenGL3_SetContext(&windows[windowIndex].OpenGLContext);
+	//ImGui_ImplGlfw_SetContext(&windows[windowIndex].GlfwContext);
+	//ImGui::SetCurrentContext(windows[windowIndex].ImGuiContext);
 
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
+
+
+
+
+
+
+	glfwPollEvents();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 	windows[windowIndex].IsOpen = !glfwWindowShouldClose(windows[windowIndex].Window);
 
@@ -103,7 +105,6 @@ void ImFramework::BeginWindow(std::string title, int width, int height) {
 }
 
 void ImFramework::EndWindow() {
-
 
 	if (!windows[windowIndex].IsOpen) {
 		ImFramework::destroyWindow(windows[windowIndex]);
@@ -115,9 +116,19 @@ void ImFramework::EndWindow() {
 	}
 
 
+
 	ImGui::Render();
 
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+	// Update and Render additional Platform Windows
+	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+	}
+
+
 
 	glfwSwapBuffers(windows[windowIndex].Window);
 
@@ -150,10 +161,13 @@ void ImFramework::createNewWindow(std::string title, int width, int height) {
 		);
 
 	{
-		inst.Context = ImGui::CreateContext();
+		ImGui::CreateContext();
+		//ImGui::SetCurrentContext(inst.ImGuiContext);
 
 		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
 	}
 
 	inst.Width  = width;
@@ -168,10 +182,9 @@ void ImFramework::createNewWindow(std::string title, int width, int height) {
 	glfwWindowHint(GLFW_STENCIL_BITS, 8);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	ImGui_ImplGlfw_InitForOpenGL(windows[windowIndex].Window, true);
-
 	glfwSetFramebufferSizeCallback(windows[windowIndex].Window, ImFramework::OnResize);
 	glfwMakeContextCurrent(windows[windowIndex].Window);
+
 
 	if (!glewIsInit) {
 		GLenum err = glewInit();
@@ -180,9 +193,12 @@ void ImFramework::createNewWindow(std::string title, int width, int height) {
 			std::cerr << "Error: " << glewGetErrorString(err) << std::endl;
 			std::abort();
 		}
+
 		glewIsInit = true;
+	}
 
 
+	{
 		std::string glsl_version = "";
 #ifdef __APPLE__
 		// GL 3.2 + GLSL 150
@@ -220,10 +236,19 @@ void ImFramework::createNewWindow(std::string title, int width, int height) {
 		glfwWindowHint(GLFW_COCOA_RETINA_FRAMEBUFFER, GLFW_FALSE);
 #endif
 
-		
+		//ImGui_ImplOpenGL3_SetContext(&windows[windowIndex].OpenGLContext);
+
 		ImGui_ImplOpenGL3_Init(glsl_version.c_str());
+		
 
 	}
+
+	ImGui_ImplGlfw_InitForOpenGL(windows[windowIndex].Window, true);
+
+	
+
+
+
 
 }
 

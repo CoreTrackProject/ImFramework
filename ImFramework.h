@@ -2,9 +2,12 @@
 
 #include <string>
 
-// Forward declaration
-struct GLFWwindow;
-struct ImGuiContext;
+
+#include <GL/glew.h>
+
+#include <imgui_docking/backends/imgui_impl_opengl3.h>
+#include <imgui_docking/backends/imgui_impl_glfw.h>
+
 
 struct ImFrameworkIO {
 	int Width = 1280;
@@ -21,9 +24,13 @@ struct ImFrameworkIO {
 
 	bool IsOpen = true;
 
-	ImGuiContext* Context;
+	//ImGuiContext* ImGuiContext;
 
 	bool Initialized = false;
+
+	//GlfwImGuiContext GlfwContext;
+
+	//ImGuiOpenGLContext OpenGLContext;
 
 };
 

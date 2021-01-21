@@ -40,12 +40,20 @@ Set(IMGUI_SRC
 
 )
 
-set(IMFRAMEWORK_SRC 
+set(IMFRAMEWORK_SRC
+
+	#imgui_impl_glfw_extended.h
+	#imgui_impl_glfw_extended.cpp
+
+    #imgui_impl_opengl3_extended.h
+    #imgui_impl_opengl3_extended.cpp
+
 	ImFramework.h
 	ImFramework.cpp
     
 	ImThread.h
 	ImThread.cpp
+
 )
 
 add_library(ImFramework ${IMGUI_SRC} ${IMFRAMEWORK_SRC})
