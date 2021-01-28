@@ -5,8 +5,9 @@
 
 #include <GL/glew.h>
 
-#include <imgui_docking/backends/imgui_impl_opengl3.h>
-#include <imgui_docking/backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+#include <backends/imgui_impl_glfw.h>
+
 
 
 struct ImFrameworkIO {

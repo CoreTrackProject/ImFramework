@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
+set(CMAKE_TOOLCHAIN_FILE ./vcpkg/scripts/buildsystems/vcpkg.cmake)
 
 project(ImFramework)
 
@@ -8,8 +9,8 @@ find_package(GLEW REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 
 
-Set(IMGUI_VERSION "imgui")
-Set(IMGUI_SRC
+set(IMGUI_VERSION "imgui")
+set(IMGUI_SRC
     ${IMGUI_VERSION}/imgui.h
     ${IMGUI_VERSION}/imgui.cpp
 
@@ -22,7 +23,7 @@ Set(IMGUI_SRC
     ${IMGUI_VERSION}/imgui_widgets.cpp
     ${IMGUI_VERSION}/imgui_tables.cpp
 
-    ${IMGUI_VERSION}/imstb_rectpack.h
+    ${IMGUI_VERSION}/imstb_rectpack.h 
     ${IMGUI_VERSION}/imstb_textedit.h
     ${IMGUI_VERSION}/imstb_truetype.h
 
@@ -33,10 +34,11 @@ Set(IMGUI_SRC
     ${IMGUI_VERSION}/backends/imgui_impl_opengl3.cpp
 )
 
-add_library(imgui ${IMGUI_SRC})
-target_include_directories(imgui PRIVATE ThirdParty/${IMGUI_VERSION})
-target_link_libraries(imgui PRIVATE glfw)
-
+# add_library(imgui ${IMGUI_SRC})
+# target_include_directories(imgui PRIVATE 
+#     ${IMGUI_VERSION}
+# )
+# target_link_libraries(imgui PRIVATE glfw)
 
 set(IMFRAMEWORK_SRC
 	ImFramework.h
@@ -46,16 +48,14 @@ set(IMFRAMEWORK_SRC
 	ImThread.cpp
 )
 
-add_library(ImFramework ${IMGUI_SRC} ${IMFRAMEWORK_SRC})
 
+add_library(ImFramework ${IMGUI_SRC} ${IMFRAMEWORK_SRC})
 target_include_directories(ImFramework 
-    PUBLIC 
-    . 
-    PRIVATE
+    PUBLIC
+    .
     ./imgui
 )
-
-target_link_libraries(ImFramework PRIVATE imgui glfw GLEW::GLEW)
+target_link_libraries(ImFramework PRIVATE glfw GLEW::GLEW)
 
 
 

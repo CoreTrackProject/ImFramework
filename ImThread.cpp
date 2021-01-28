@@ -2,14 +2,14 @@
 
 #include <memory>
 #include <thread>
-
+#include <vector>
 
 
 struct ImThreadTokenInternal : public ImThreadToken {
 	std::thread Thread;
-	void (*AsyncFunc)(bool*, std::mutex*);
+	void (*AsyncFunc)(bool*, std::mutex*) = nullptr;
 	bool IsRunning = false;
-	void* Data;
+	void* Data = nullptr;
 };
 
 std::vector<ImThreadTokenInternal> tokens;
@@ -17,7 +17,7 @@ std::vector<ImThreadTokenInternal> tokens;
 ImThreadToken* ImThread::DefineThread(std::string name, void (*async_func)(bool*, std::mutex*)) {
 
 	ImThreadTokenInternal newToken;
-	newToken.ID = tokens.size();
+	newToken.ID = static_cast<int>(tokens.size());
 	newToken.AsyncFunc = async_func;
 	
 

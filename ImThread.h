@@ -8,7 +8,7 @@
 struct ImThreadToken {
 	int ID = -1;
 	bool RequestCancel = false;
-	std::mutex* SyncObject;
+	std::mutex* SyncObject = nullptr;
 };
 
 class ImThread {
