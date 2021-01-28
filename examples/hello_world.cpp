@@ -13,12 +13,12 @@ int main() {
 	while (ImFramework::Begin()) {
 
 
-
 		ImFramework::BeginWindow("Hello World", 1920, 1080);
 		{
 			ImGui::ShowDemoWindow();
 		}
 		ImFramework::EndWindow();
+
 
 
 		ImFramework::End();

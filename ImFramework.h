@@ -24,13 +24,7 @@ struct ImFrameworkIO {
 
 	bool IsOpen = true;
 
-	//ImGuiContext* ImGuiContext;
-
 	bool Initialized = false;
-
-	//GlfwImGuiContext GlfwContext;
-
-	//ImGuiOpenGLContext OpenGLContext;
 
 };
 
@@ -56,6 +50,7 @@ public:
 private:
 	static void createNewWindow(std::string title, int width, int height);
 
-	static void destroyWindow(ImFrameworkIO window);
+	static void hideWindow(ImFrameworkIO window);
 
+	static void initOpenGL();
 };
