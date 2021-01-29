@@ -29,6 +29,13 @@ void ImFramework::Init() {
 	if (!glfwInit()) {
 		std::abort();
 	}
+
+	// Imgui init
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+	
 }
 
 void ImFramework::Destroy() {
@@ -66,7 +73,6 @@ void ImFramework::BeginWindow(std::string title, int width, int height) {
 		ImFramework::createNewWindow(title, width, height);
 		windows[windowIndex].Initialized = true;
 	}
-
 
 	glfwMakeContextCurrent(windows[windowIndex].Window);
 
@@ -147,12 +153,7 @@ void ImFramework::createNewWindow(std::string title, int width, int height) {
 
 
 	if (windowIndex == 0) {
-		{
-			ImGui::CreateContext();
-			ImGuiIO& io = ImGui::GetIO();
-			io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-			io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-		}
+		
 		
 
 		glfwSetFramebufferSizeCallback(windows[0].Window, ImFramework::OnResize);

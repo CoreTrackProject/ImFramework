@@ -4,7 +4,7 @@
 #include <functional>
 #include <mutex>
 
-
+ 
 struct ImThreadToken {
 	int ID = -1;
 	bool RequestCancel = false;
@@ -14,7 +14,7 @@ struct ImThreadToken {
 class ImThread {
 
 public:
-	static ImThreadToken* DefineThread(std::string name, void (*async_func)(bool*, std::mutex*));
+	static ImThreadToken* DefineThread(std::string name, void (*async_func)());
 
 	static void StartThread(ImThreadToken* token);
 

@@ -7,14 +7,14 @@
 
 struct ImThreadTokenInternal : public ImThreadToken {
 	std::thread Thread;
-	void (*AsyncFunc)(bool*, std::mutex*) = nullptr;
+	void (*AsyncFunc)() = nullptr;
 	bool IsRunning = false;
 	void* Data = nullptr;
 };
 
 std::vector<ImThreadTokenInternal> tokens;
 
-ImThreadToken* ImThread::DefineThread(std::string name, void (*async_func)(bool*, std::mutex*)) {
+ImThreadToken* ImThread::DefineThread(std::string name, void (*async_func)()) {
 
 	ImThreadTokenInternal newToken;
 	newToken.ID = static_cast<int>(tokens.size());
@@ -31,11 +31,11 @@ void ImThread::StartThread(ImThreadToken* token) {
 		return;
 	}
 
-	int idx = token->ID - 1;
+	int idx = token->ID;
 
 	if (tokens[idx].AsyncFunc != nullptr) {
 		tokens[idx].IsRunning = true;
-		tokens[idx].Thread = std::thread(tokens[idx].AsyncFunc, &tokens[idx].RequestCancel, tokens[idx].SyncObject);
+		tokens[idx].Thread = std::thread(tokens[idx].AsyncFunc);
 		tokens[idx].Thread.detach();
 	}
 }
@@ -45,15 +45,15 @@ bool ImThread::IsFinished(ImThreadToken* token) {
 		return true;
 	}
 
-	int idx = token->ID - 1;
+	int idx = token->ID;
 
-	return tokens[idx].Thread.joinable();
+	return !tokens[idx].Thread.joinable();
 }
 
 bool ImThread::HasProgress(ImThreadToken* token, void* data) {
 
 
-	int idx = token->ID - 1;
+	int idx = token->ID;
 
 	
 
