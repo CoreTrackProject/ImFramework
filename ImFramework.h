@@ -8,8 +8,6 @@
 #include <backends/imgui_impl_opengl3.h>
 #include <backends/imgui_impl_glfw.h>
 
-
-
 struct ImFrameworkIO {
 	int Width = 1280;
 
