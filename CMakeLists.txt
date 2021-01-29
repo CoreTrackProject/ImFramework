@@ -34,11 +34,6 @@ set(IMGUI_SRC
     ${IMGUI_VERSION}/backends/imgui_impl_opengl3.cpp
 )
 
-# add_library(imgui ${IMGUI_SRC})
-# target_include_directories(imgui PRIVATE 
-#     ${IMGUI_VERSION}
-# )
-# target_link_libraries(imgui PRIVATE glfw)
 
 set(IMFRAMEWORK_SRC
 	ImFramework.h
