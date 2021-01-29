@@ -1,13 +1,9 @@
 cmake_minimum_required(VERSION 3.5)
 
-set(CMAKE_TOOLCHAIN_FILE ./vcpkg/scripts/buildsystems/vcpkg.cmake)
-
 project(ImFramework)
 
-
-find_package(GLEW REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
-
+find_package(GLEW REQUIRED)
 
 set(IMGUI_VERSION "imgui")
 set(IMGUI_SRC
@@ -50,7 +46,7 @@ target_include_directories(ImFramework
     .
     ./imgui
 )
-target_link_libraries(ImFramework PRIVATE glfw GLEW::GLEW)
+target_link_libraries(ImFramework PUBLIC glfw GLEW::GLEW)
 
 
 
