@@ -74,13 +74,14 @@ void ImFramework::BeginWindow(std::string title, int width, int height) {
 
 	glfwMakeContextCurrent(windows[windowIndex].Window);
 
+	glfwPollEvents();
+
 	if (windowIndex == 0) {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 	}
 
-	glfwPollEvents();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 
@@ -96,14 +97,9 @@ void ImFramework::EndWindow() {
 	
 	// main window
 	if (windowIndex == 0) {
+		ImGui::EndFrame();
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-		// Update and Render additional Platform Windows
-		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-		{
-			ImGui::UpdatePlatformWindows();
-			ImGui::RenderPlatformWindowsDefault();
-		}
 	}
 
 	glfwSwapBuffers(windows[windowIndex].Window);
