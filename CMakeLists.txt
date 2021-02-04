@@ -2,8 +2,36 @@ cmake_minimum_required(VERSION 3.5)
 
 project(ImFramework)
 
+option(BUILD_EXAMPLE "Build example project" OFF)
+
 find_package(glfw3 CONFIG REQUIRED)
 find_package(GLEW REQUIRED)
+
+set(IMGUI_VERSION "imgui")
+set(IMGUI_SRC
+    ${IMGUI_VERSION}/imgui.h
+    ${IMGUI_VERSION}/imgui.cpp
+
+    ${IMGUI_VERSION}/imgui_internal.h
+    ${IMGUI_VERSION}/imconfig.h
+    
+    ${IMGUI_VERSION}/imgui_demo.cpp
+    ${IMGUI_VERSION}/imgui_draw.cpp
+
+    ${IMGUI_VERSION}/imgui_widgets.cpp
+    ${IMGUI_VERSION}/imgui_tables.cpp
+
+    ${IMGUI_VERSION}/imstb_rectpack.h 
+    ${IMGUI_VERSION}/imstb_textedit.h
+    ${IMGUI_VERSION}/imstb_truetype.h
+
+    ${IMGUI_VERSION}/backends/imgui_impl_glfw.h
+    ${IMGUI_VERSION}/backends/imgui_impl_glfw.cpp
+
+    ${IMGUI_VERSION}/backends/imgui_impl_opengl3.h
+    ${IMGUI_VERSION}/backends/imgui_impl_opengl3.cpp
+)
+
 
 set(IMFRAMEWORK_SRC
 	ImFramework.h
@@ -13,23 +41,16 @@ set(IMFRAMEWORK_SRC
 	ImThread.cpp
 )
 
-
-add_library(ImFramework ${IMFRAMEWORK_SRC})
+add_library(ImFramework ${IMFRAMEWORK_SRC} ${IMGUI_SRC})
 target_include_directories(ImFramework 
     PUBLIC
     .
+    ./imgui
 )
+
 target_link_libraries(ImFramework PUBLIC glfw GLEW::GLEW)
 
 
-
-
-#project(hello_world)
-
-#set(SRC 
-#	examples/hello_world.cpp
-#)
-
-#add_executable(hello_world ${SRC})
-
-#target_link_libraries(hello_world PRIVATE ImFramework glfw GLEW::GLEW)
+if(BUILD_EXAMPLE)
+    add_subdirectory(examples)
+endif()

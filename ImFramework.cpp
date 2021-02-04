@@ -227,3 +227,9 @@ void ImFramework::initOpenGL() {
 	}
 
 }
+
+double ImFramework::GetScaleFactor() {
+
+	return 1.0;
+
+}

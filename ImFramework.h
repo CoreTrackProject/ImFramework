@@ -46,6 +46,8 @@ public:
 
 	static ImFrameworkIO GetIO();
 
+	static double GetScaleFactor();
+
 private:
 	static void createNewWindow(std::string title, int width, int height);
 
