@@ -63,4 +63,5 @@ private:
 
 private:
 	static bool enable_dpi_awareness;
+	static float dpi_scale;
 };

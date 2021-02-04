@@ -26,6 +26,7 @@ static bool firstBegin = true;
 
 
 bool ImFramework::enable_dpi_awareness = false;
+float ImFramework::dpi_scale = 1.0f;
 
 
 void ImFramework::Init() {
@@ -88,6 +89,7 @@ void ImFramework::BeginWindow(std::string title, int width, int height) {
 			float dpi = ImGui::GetPlatformIO().MainViewport->DpiScale;
 			auto& io = ImGui::GetIO();
 			//io.DisplaySize = ImVec2((float)windows[windowIndex].Width / 3, (float)windows[windowIndex].Width / 3);
+			ImFramework::dpi_scale = dpi;
 			io.FontGlobalScale = dpi;
 		}
 	}
@@ -242,11 +244,13 @@ void ImFramework::initOpenGL() {
 
 ImVec2 ImFramework::GetScaleFactor() {
 
-	float xscale, yscale;
-	glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xscale, &yscale);
+	//float xscale, yscale;
+	//glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xscale, &yscale);
 
 
-	return ImVec2(xscale, yscale);
+	//return ImVec2(xscale, yscale);
+
+	return ImVec2(ImFramework::dpi_scale, ImFramework::dpi_scale);
 
 }
 
