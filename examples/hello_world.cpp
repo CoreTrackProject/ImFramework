@@ -10,6 +10,8 @@ int main() {
 
 	ImFramework::Init();
 
+	ImFramework::EnableFeature(ImFramework_Feature::Feature_DPI_Awareness, true);
+
 	while (ImFramework::Begin()) {
 
 

@@ -8,6 +8,10 @@
 #include <backends/imgui_impl_opengl3.h>
 #include <backends/imgui_impl_glfw.h>
 
+enum class ImFramework_Feature {
+	Feature_DPI_Awareness = 0
+};
+
 struct ImFrameworkIO {
 	int Width = 1280;
 
@@ -46,7 +50,9 @@ public:
 
 	static ImFrameworkIO GetIO();
 
-	static double GetScaleFactor();
+	static ImVec2 GetScaleFactor();
+
+	static void EnableFeature(ImFramework_Feature feature, bool value);
 
 private:
 	static void createNewWindow(std::string title, int width, int height);
@@ -54,4 +60,7 @@ private:
 	static void hideWindow(ImFrameworkIO window);
 
 	static void initOpenGL();
+
+private:
+	static bool enable_dpi_awareness;
 };

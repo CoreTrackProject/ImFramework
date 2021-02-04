@@ -25,6 +25,9 @@ static bool glewIsInit = false;
 static bool firstBegin = true;
 
 
+bool ImFramework::enable_dpi_awareness = false;
+
+
 void ImFramework::Init() {
 	if (!glfwInit()) {
 		std::abort();
@@ -80,7 +83,16 @@ void ImFramework::BeginWindow(std::string title, int width, int height) {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
+
+		if (ImFramework::enable_dpi_awareness) {
+			float dpi = ImGui::GetPlatformIO().MainViewport->DpiScale;
+			auto& io = ImGui::GetIO();
+			//io.DisplaySize = ImVec2((float)windows[windowIndex].Width / 3, (float)windows[windowIndex].Width / 3);
+			io.FontGlobalScale = dpi;
+		}
 	}
+
+	
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -228,8 +240,18 @@ void ImFramework::initOpenGL() {
 
 }
 
-double ImFramework::GetScaleFactor() {
+ImVec2 ImFramework::GetScaleFactor() {
 
-	return 1.0;
+	float xscale, yscale;
+	glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xscale, &yscale);
 
+
+	return ImVec2(xscale, yscale);
+
+}
+
+void ImFramework::EnableFeature(ImFramework_Feature feature, bool value) {
+	if (feature == ImFramework_Feature::Feature_DPI_Awareness) {
+		ImFramework::enable_dpi_awareness = value;
+	}
 }
