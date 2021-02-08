@@ -39,6 +39,10 @@ set(IMFRAMEWORK_SRC
 
 	ImThread.h
 	ImThread.cpp
+    
+	ImProperty.h
+	ImProperty.cpp
+
 )
 
 add_library(ImFramework ${IMFRAMEWORK_SRC} ${IMGUI_SRC})
