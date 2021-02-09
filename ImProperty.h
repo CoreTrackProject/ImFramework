@@ -29,9 +29,20 @@ public:
 		}
 	}
 
+	template<>
+	static void SetValue(std::string property_name, bool value) {
+		if (ImProperty::config_data.find(property_name) == ImProperty::config_data.end()) {
+			// key not found
+			ImProperty::config_data.emplace(property_name, value ? "true" : "false");
+		}
+		else {
+			// key found
+			ImProperty::config_data[property_name] = value ? "true" : "false";
+		}
+	}
+
 	template<typename T>
 	static T GetValue(std::string property_name) {
-		std::string type_str = ImProperty::TypeToString<T>();
 		if (ImProperty::config_data.find(property_name) == ImProperty::config_data.end()) {
 			return T();
 		} else {
@@ -45,6 +56,16 @@ public:
 			return "";
 		} else {
 			return ImProperty::config_data[property_name];
+		}
+	}
+
+	template<>
+	static bool GetValue(std::string property_name) {
+		if (ImProperty::config_data.find(property_name) == ImProperty::config_data.end()) {
+			return "";
+		}
+		else {
+			return ImProperty::config_data[property_name].compare("true") == 0;
 		}
 	}
 
@@ -97,24 +118,6 @@ public:
 
 private:
 	template<typename T>
-	static std::string TypeToString() {
-		std::string type_str = "";
-		if (std::is_same<T, int>::value) {
-			type_str = "INT";
-		}
-		if (std::is_same<T, unsigned int>::value) {
-			type_str = "UINT";
-		}
-		if (std::is_same<T, float>::value) {
-			type_str = "FLOAT";
-		}
-		if (std::is_same<T, double>::value) {
-			type_str = "DOUBLE";
-		}
-		return type_str;
-	}
-
-	template<typename T>
 	static T StringToType(std::string value) {
 		if (std::is_same<T, int>::value) {
 			return std::stoi(value);
@@ -127,6 +130,9 @@ private:
 		}
 		if (std::is_same<T, double>::value) {
 			return std::stod(value);
+		}
+		if (std::is_same<T, bool>::value) {
+			return std::stoi(value);
 		}
 		return T();
 	}
