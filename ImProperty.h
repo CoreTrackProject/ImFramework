@@ -3,12 +3,17 @@
 #include <string>
 #include <map>
 #include <fstream>
+#include <algorithm>
 
 class ImProperty {
 
 public:
 	template<typename T>
 	static void SetValue(std::string property_name, T value) {
+
+		std::string entry = std::to_string(value);
+		ImProperty::removeComma(entry);
+
 		if (ImProperty::config_data.find(property_name) == ImProperty::config_data.end()) {
 			// key not found
 			ImProperty::config_data.emplace(property_name, std::to_string(value));
@@ -20,6 +25,7 @@ public:
 
 	template<>
 	static void SetValue(std::string property_name, std::string value) {
+		ImProperty::removeComma(value);
 		if (ImProperty::config_data.find(property_name) == ImProperty::config_data.end()) {
 			// key not found
 			ImProperty::config_data.emplace(property_name, value);
@@ -137,6 +143,9 @@ private:
 		return T();
 	}
 
+	static void removeComma(std::string& str) {
+		std::replace(str.begin(), str.end(), ',', '_');
+	}
 	
 
 private:
