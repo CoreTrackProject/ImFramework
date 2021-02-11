@@ -68,7 +68,7 @@ public:
 	template<>
 	static bool GetValue(std::string property_name) {
 		if (ImProperty::config_data.find(property_name) == ImProperty::config_data.end()) {
-			return "";
+			return false;
 		}
 		else {
 			return ImProperty::config_data[property_name].compare("true") == 0;
@@ -97,7 +97,7 @@ public:
 
 	static void Load(std::string file) {
 
-		ImProperty::config_file = file;
+		ImProperty::config_file = file + ".property";
 		std::ifstream file_stream(file);
 		std::map<std::string, std::string> tmp_config_data;
 
