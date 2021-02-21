@@ -9,7 +9,7 @@
 #include <backends/imgui_impl_glfw.h>
 
 enum class ImFramework_Feature {
-	Feature_DPI_Awareness = 0
+	DPI_Awareness = 0
 };
 
 struct ImFrameworkIO {

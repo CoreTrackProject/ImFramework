@@ -1,61 +1,63 @@
 #include "ImThread.h"
 
-#include <memory>
-#include <thread>
-#include <vector>
+//std::vector<ThreadToken> ImThread::tokens;
+std::mutex ImThread::mtx;
 
+ThreadToken ImThread::DefineThread(std::string name, void (*async_func)(ThreadToken*)) {
+	std::lock_guard<std::mutex> lock(mtx);
 
-struct ImThreadTokenInternal : public ImThreadToken {
-	std::thread Thread;
-	void (*AsyncFunc)() = nullptr;
-	bool IsRunning = false;
-	void* Data = nullptr;
-};
-
-std::vector<ImThreadTokenInternal> tokens;
-
-ImThreadToken* ImThread::DefineThread(std::string name, void (*async_func)()) {
-
-	ImThreadTokenInternal newToken;
-	newToken.ID = static_cast<int>(tokens.size());
+	ThreadToken newToken;
+	//newToken.ID = static_cast<int>(ImThread::tokens.size());
 	newToken.AsyncFunc = async_func;
-	
 
-	tokens.push_back(std::move(newToken));
+	//ImThread::tokens.push_back(std::move(newToken));
 
-	return &tokens[tokens.size() - 1];
+	return std::move(newToken);
 }
 
-void ImThread::StartThread(ImThreadToken* token) {
-	if (tokens.size() <= 0) {
-		return;
+void ImThread::StartThread(ThreadToken& token) {
+	std::lock_guard<std::mutex> lock(mtx);
+
+	int idx = token.ID;
+
+	token.IsRunning = true;
+	token.IsFinished = false;
+	token.RequestCancel = false;
+
+
+	if (token.AsyncFunc != nullptr) {
+
+
+		token.Thread = std::thread(
+			token.AsyncFunc,
+			&token
+		);
+		token.Thread.detach();
 	}
 
-	int idx = token->ID;
-
-	if (tokens[idx].AsyncFunc != nullptr) {
-		tokens[idx].IsRunning = true;
-		tokens[idx].Thread = std::thread(tokens[idx].AsyncFunc);
-		tokens[idx].Thread.detach();
-	}
 }
 
-bool ImThread::IsFinished(ImThreadToken* token) {
-	if (tokens.size() <= 0) {
+bool ImThread::IsFinished(ThreadToken& token) {
+	std::lock_guard<std::mutex> lock(mtx);
+
+
+	int idx = token.ID;
+
+	if (token.IsFinished) {
+		token.IsRunning = false;
+		token.IsFinished = false;
 		return true;
 	}
 
-	int idx = token->ID;
-
-	return !tokens[idx].Thread.joinable();
+	return false;
 }
 
-bool ImThread::HasProgress(ImThreadToken* token, void* data) {
+bool ImThread::HasProgress(ThreadToken& token) {
+	std::lock_guard<std::mutex> lock(mtx);
 
+	int idx = token.ID;
 
-	int idx = token->ID;
+	bool hasProgress = token.HasProgress() && token.IsRunning;
 
-	
-
-	return true;
+	return hasProgress;
 }

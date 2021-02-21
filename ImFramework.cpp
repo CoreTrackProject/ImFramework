@@ -86,7 +86,7 @@ void ImFramework::BeginWindow(std::string title, int width, int height) {
 		ImGui::NewFrame();
 
 		if (ImFramework::enable_dpi_awareness) {
-			float dpi = ImGui::GetPlatformIO().MainViewport->DpiScale;
+			float dpi = ImGui::GetPlatformIO().Viewports[0]->DpiScale;
 			auto& io = ImGui::GetIO();
 			//io.DisplaySize = ImVec2((float)windows[windowIndex].Width / 3, (float)windows[windowIndex].Width / 3);
 			ImFramework::dpi_scale = dpi;
@@ -255,7 +255,7 @@ ImVec2 ImFramework::GetScaleFactor() {
 }
 
 void ImFramework::EnableFeature(ImFramework_Feature feature, bool value) {
-	if (feature == ImFramework_Feature::Feature_DPI_Awareness) {
+	if (feature == ImFramework_Feature::DPI_Awareness) {
 		ImFramework::enable_dpi_awareness = value;
 	}
 }
