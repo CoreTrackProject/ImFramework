@@ -1,10 +1,10 @@
 #include "ImThread.h"
+#include "ImFramework.h"
 
-//std::vector<ThreadToken> ImThread::tokens;
-std::mutex ImThread::mtx;
+#include <chrono>
 
 ThreadToken ImThread::DefineThread(std::string name, void (*async_func)(ThreadToken*)) {
-	std::lock_guard<std::mutex> lock(mtx);
+
 
 	ThreadToken newToken;
 	//newToken.ID = static_cast<int>(ImThread::tokens.size());
@@ -16,7 +16,7 @@ ThreadToken ImThread::DefineThread(std::string name, void (*async_func)(ThreadTo
 }
 
 void ImThread::StartThread(ThreadToken& token) {
-	std::lock_guard<std::mutex> lock(mtx);
+
 
 	int idx = token.ID;
 
@@ -27,18 +27,18 @@ void ImThread::StartThread(ThreadToken& token) {
 
 	if (token.AsyncFunc != nullptr) {
 
-
 		token.Thread = std::thread(
 			token.AsyncFunc,
 			&token
 		);
 		token.Thread.detach();
+
 	}
 
 }
 
 bool ImThread::IsFinished(ThreadToken& token) {
-	std::lock_guard<std::mutex> lock(mtx);
+
 
 
 	int idx = token.ID;
@@ -53,7 +53,22 @@ bool ImThread::IsFinished(ThreadToken& token) {
 }
 
 bool ImThread::HasProgress(ThreadToken& token) {
-	std::lock_guard<std::mutex> lock(mtx);
+	
+	// Delay feature, only report progress for ex. when every 10 seconds are past
+	int delta_time = ImFramework::GetImThreadProgressDeltaTime();
+	if (delta_time != 0 && token.IsRunning) {
+		std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
+		auto duration = now.time_since_epoch();
+		auto mil_seconds = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+		
+		static long long last_time = 0;
+
+		if ((mil_seconds - last_time) > (long long)delta_time) {
+			last_time = mil_seconds;
+		} else {
+			return false;
+		}
+	}
 
 	int idx = token.ID;
 

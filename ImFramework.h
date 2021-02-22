@@ -9,7 +9,8 @@
 #include <backends/imgui_impl_glfw.h>
 
 enum class ImFramework_Feature {
-	DPI_Awareness = 0
+	DPI_Awareness = 0,
+	ImThread_HasProgress_Delta_Time = 1
 };
 
 struct ImFrameworkIO {
@@ -54,6 +55,10 @@ public:
 
 	static void EnableFeature(ImFramework_Feature feature, bool value);
 
+	static void EnableFeature(ImFramework_Feature feature, int value);
+
+	static int GetImThreadProgressDeltaTime() { return ImFramework::imthread_progress_delta_time; }
+
 private:
 	static void createNewWindow(std::string title, int width, int height);
 
@@ -64,4 +69,6 @@ private:
 private:
 	static bool enable_dpi_awareness;
 	static float dpi_scale;
+
+	static int imthread_progress_delta_time;
 };

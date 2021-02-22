@@ -2,7 +2,6 @@
 
 #include <string>
 #include <functional>
-#include <mutex>
 
 #include <vector>
 #include <thread>
@@ -65,15 +64,6 @@ public:
 
 	static bool IsFinished(ThreadToken& token);
 
-	static bool IsFinished(ThreadToken& ...) {
-
-		va_list()
-	}
-
 	static bool HasProgress(ThreadToken& token);
-
-	
-private:
-	static std::mutex mtx;
 
 };

@@ -27,6 +27,7 @@ static bool firstBegin = true;
 
 bool ImFramework::enable_dpi_awareness = false;
 float ImFramework::dpi_scale = 1.0f;
+int ImFramework::imthread_progress_delta_time = 0;
 
 
 void ImFramework::Init() {
@@ -257,5 +258,11 @@ ImVec2 ImFramework::GetScaleFactor() {
 void ImFramework::EnableFeature(ImFramework_Feature feature, bool value) {
 	if (feature == ImFramework_Feature::DPI_Awareness) {
 		ImFramework::enable_dpi_awareness = value;
+	}
+}
+
+void ImFramework::EnableFeature(ImFramework_Feature feature, int value) {
+	if (feature == ImFramework_Feature::ImThread_HasProgress_Delta_Time) {
+		ImFramework::imthread_progress_delta_time = value;
 	}
 }
