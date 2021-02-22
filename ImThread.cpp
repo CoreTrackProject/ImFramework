@@ -4,14 +4,9 @@
 #include <chrono>
 
 ThreadToken ImThread::DefineThread(std::string name, void (*async_func)(ThreadToken*)) {
-
-
 	ThreadToken newToken;
-	//newToken.ID = static_cast<int>(ImThread::tokens.size());
 	newToken.AsyncFunc = async_func;
-
-	//ImThread::tokens.push_back(std::move(newToken));
-
+	
 	return std::move(newToken);
 }
 
@@ -20,8 +15,8 @@ void ImThread::StartThread(ThreadToken& token) {
 
 	int idx = token.ID;
 
-	token.IsRunning = true;
-	token.IsFinished = false;
+	token.IsRunning     = true;
+	token.IsFinished    = false;
 	token.RequestCancel = false;
 
 
