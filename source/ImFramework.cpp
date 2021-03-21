@@ -1,10 +1,13 @@
 #include "ImFramework.h"
 
-
+#include <gl/glew.h>
 #include <GLFW/glfw3.h>
+
 
 #include <imgui.h>
 #include <imgui_internal.h>
+#include <backends/imgui_impl_opengl3.h>
+#include <backends/imgui_impl_glfw.h>
 
 
 #include <vector>
@@ -48,7 +51,7 @@ void ImFramework::Destroy() {
 	ImGui::DestroyContext();
 
 	for (auto& wnd : windows) {
-		glfwDestroyWindow(wnd.Window);
+		glfwDestroyWindow((GLFWwindow*)wnd.Window);
 	}
 	
 	glfwTerminate();
@@ -77,7 +80,7 @@ void ImFramework::BeginWindow(std::string title, int width, int height) {
 		windows[windowIndex].Initialized = true;
 	}
 
-	glfwMakeContextCurrent(windows[windowIndex].Window);
+	glfwMakeContextCurrent((GLFWwindow*)windows[windowIndex].Window);
 
 	glfwPollEvents();
 
@@ -100,31 +103,27 @@ void ImFramework::BeginWindow(std::string title, int width, int height) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 
-	windows[windowIndex].IsOpen = !glfwWindowShouldClose(windows[windowIndex].Window);
+	windows[windowIndex].IsOpen =
+            !glfwWindowShouldClose((GLFWwindow*)windows[windowIndex].Window);
 
 }
 
 void ImFramework::EndWindow() {
-
 	if (!windows[windowIndex].IsOpen) {
 		ImFramework::hideWindow(windows[windowIndex]);
 	}
-	
 	// main window
 	if (windowIndex == 0) {
 		ImGui::EndFrame();
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
-
-	glfwSwapBuffers(windows[windowIndex].Window);
-
-
+	glfwSwapBuffers((GLFWwindow*)windows[windowIndex].Window);
 	windowIndex++;
 }
 
-void ImFramework::OnResize(GLFWwindow* window, int width, int height) {
-	glfwMakeContextCurrent(window);
+void ImFramework::OnResize(void* window, int width, int height) {
+    glfwMakeContextCurrent((GLFWwindow*)window);
 	glViewport(0, 0, width, height);
 }
 
@@ -161,19 +160,21 @@ void ImFramework::createNewWindow(std::string title, int width, int height) {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 
-	if (windowIndex == 0) {
-		
-		
+	if (windowIndex == 0)
+        {
+            glfwSetFramebufferSizeCallback((GLFWwindow*)windows[0].Window,
+                                           [](GLFWwindow* window, int width, int height) {
+                                               glfwMakeContextCurrent((GLFWwindow*)window);
+                                               glViewport(0, 0, width, height);
+                                           });
 
-		glfwSetFramebufferSizeCallback(windows[0].Window, ImFramework::OnResize);
-		glfwMakeContextCurrent(windows[0].Window);
+            glfwMakeContextCurrent((GLFWwindow*)windows[0].Window);
 
-		ImGui_ImplGlfw_InitForOpenGL(windows[0].Window, true);
-		ImFramework::initOpenGL();
+            ImGui_ImplGlfw_InitForOpenGL((GLFWwindow*)windows[0].Window, true);
+            ImFramework::initOpenGL();
 
-
-		return;
-	}
+            return;
+        }
 
 
 
@@ -187,7 +188,7 @@ void ImFramework::createNewWindow(std::string title, int width, int height) {
 
 void ImFramework::hideWindow(ImFrameworkIO window) {
 	// Just hide the window, cleanup during ImFramework::Destroy();
-	glfwHideWindow(window.Window);
+    glfwHideWindow((GLFWwindow*)window.Window);
 }
 
 void ImFramework::initOpenGL() {
@@ -243,7 +244,7 @@ void ImFramework::initOpenGL() {
 
 }
 
-ImVec2 ImFramework::GetScaleFactor() {
+float ImFramework::GetScaleFactor() {
 
 	//float xscale, yscale;
 	//glfwGetMonitorContentScale(glfwGetPrimaryMonitor(), &xscale, &yscale);
@@ -251,7 +252,7 @@ ImVec2 ImFramework::GetScaleFactor() {
 
 	//return ImVec2(xscale, yscale);
 
-	return ImVec2(ImFramework::dpi_scale, ImFramework::dpi_scale);
+	return ImFramework::dpi_scale;
 
 }
 

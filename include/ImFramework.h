@@ -3,11 +3,6 @@
 #include <string>
 
 
-#include <GL/glew.h>
-
-#include <backends/imgui_impl_opengl3.h>
-#include <backends/imgui_impl_glfw.h>
-
 enum class ImFramework_Feature {
 	DPI_Awareness = 0,
 	ImThread_HasProgress_Delta_Time = 1
@@ -24,7 +19,7 @@ struct ImFrameworkIO {
 
 	std::string Title = "";
 
-	GLFWwindow* Window = nullptr;
+	void* Window = nullptr;
 
 	bool IsOpen = true;
 
@@ -43,7 +38,7 @@ public:
 
 	static void End();	
 
-	static void OnResize(GLFWwindow* window, int width, int height);
+	static void OnResize(void* window, int width, int height);
 
 	static void BeginWindow(std::string title = "", int width = 1280, int height = 720);
 
@@ -51,7 +46,7 @@ public:
 
 	static ImFrameworkIO GetIO();
 
-	static ImVec2 GetScaleFactor();
+	static float GetScaleFactor();
 
 	static void EnableFeature(ImFramework_Feature feature, bool value);
 
