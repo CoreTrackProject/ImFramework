@@ -20,13 +20,10 @@ cd ..
 
 if not exist build (
 	mkdir build
-	cd build
-
-	cmake .. -DCMAKE_TOOLCHAIN_FILE="../external/vcpkg/scripts/buildsystems/vcpkg.cmake" -DBUILD_EXAMPLE=ON
 )
 
-
-
+cd build
+cmake .. -DCMAKE_TOOLCHAIN_FILE="../external/vcpkg/scripts/buildsystems/vcpkg.cmake" -DBUILD_EXAMPLE=ON
 
 
 

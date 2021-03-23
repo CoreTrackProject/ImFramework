@@ -7,12 +7,13 @@
 #include <imgui.h>
 
 int main() {
+
 	ImFramework::Init();
 
 	ImFramework::EnableFeature(ImFramework_Feature::DPI_Awareness, true);
 	ImFramework::EnableFeature(ImFramework_Feature::ImThread_HasProgress_Delta_Time, 10000);
 
-	ThreadToken token_thread_1 = 
+	ThreadToken token_thread_1 =
 		ImThread::DefineThread("TestThread1",
 		[](ThreadToken* data) {
 			for (int i = 0; i <= 1000; i++) {
@@ -27,7 +28,8 @@ int main() {
 		}
 	);
 
-	ThreadToken token_thread_2 = ImThread::DefineThread("TestThread2",
+	ThreadToken token_thread_2 = 
+		ImThread::DefineThread("TestThread2",
 		[](ThreadToken* data) {
 			for (int i = 0; i <= 1000; i++) {
 				if (data->RequestCancel) {

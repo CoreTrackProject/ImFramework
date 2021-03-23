@@ -115,9 +115,15 @@ target_include_directories(ImFramework
 )
 
 # The following properties are useful when you want to have an 'install' target
+list(HEADER_SRC 
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/ImFramework.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/ImProperty.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/ImThread.h"
+)
+
 set_target_properties(${PROJECT_NAME} 
-    PROPERTIES 
-        PUBLIC_HEADER ${CMAKE_CURRENT_SOURCE_DIR}/include/foo.h # Headers listed here will automatically be copied when installing. Note that directories hierarchy is not preserved.
+    PROPERTIES
+        PUBLIC_HEADER "${HEADER_SRC}" # Headers listed here will automatically be copied when installing. Note that directories hierarchy is not preserved.    
         DEBUG_POSTFIX d # We had a postfix so that we can install debug and release libraries side by side (Windows way)
 )
 
@@ -176,14 +182,14 @@ if(${PROJECT_NAME}_INSTALL)
     install(
         TARGETS
           ImFramework      # ... and libraries
-          ImGui
+          ImGui 
           EXPORT ${PROJECT_NAME}_Targets
-    # Following is only needed pre-cmake3.14
-    #    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    #    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    #    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    # If you want to split between runtime and dev for examples, take a look at COMPONENT, NAMELINK_COMPONENT etc
-    # More info in Craig Scott's talk "Deep CMake for library authors" https://www.youtube.com/watch?v=m0DwB4OvDXk
+        # Following is only needed pre-cmake3.14
+        #    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        #    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        #    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        # If you want to split between runtime and dev for examples, take a look at COMPONENT, NAMELINK_COMPONENT etc
+        # More info in Craig Scott's talk "Deep CMake for library authors" https://www.youtube.com/watch?v=m0DwB4OvDXk
         INCLUDES
             DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )
