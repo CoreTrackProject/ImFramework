@@ -100,6 +100,7 @@ add_library(ImFramework
     include/ImFramework.h
     include/ImProperty.h
     include/ImThread.h
+    include/ImMarkdown.hpp
 
     source/ImFramework.cpp
     source/ImProperty.cpp
@@ -107,15 +108,18 @@ add_library(ImFramework
 
 )
 
+find_path(STB_INCLUDE_DIRS "stb.h")
+
 # Since we put the public interface headers in the include directory, we need to tell the compiler so that we can #include <file>.
 target_include_directories(ImFramework
     PUBLIC # The folder must be used in the include path for any target using this library
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> # Due to the way installation work, we only want this path set when building, not once installed
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/external/imgui>
+        $<BUILD_INTERFACE:${STB_INCLUDE_DIRS}>
 )
 
 # The following properties are useful when you want to have an 'install' target
-list(HEADER_SRC 
+set(HEADER_SRC 
     "${CMAKE_CURRENT_SOURCE_DIR}/include/ImFramework.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/ImProperty.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/include/ImThread.h"
