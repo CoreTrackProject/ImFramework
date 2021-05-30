@@ -6,8 +6,8 @@
 
 #include <imgui.h>
 #include <imgui_internal.h>
-#include <backends/imgui_impl_opengl3.h>
-#include <backends/imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+#include <imgui_impl_glfw.h>
 
 
 #include <vector>
@@ -90,11 +90,11 @@ void ImFramework::BeginWindow(std::string title, int width, int height) {
 		ImGui::NewFrame();
 
 		if (ImFramework::enable_dpi_awareness) {
-			float dpi = ImGui::GetPlatformIO().Viewports[0]->DpiScale;
+			//float dpi = ImGui::GetPlatFormIO().Viewports[0]->DpiScale;
 			auto& io = ImGui::GetIO();
 			//io.DisplaySize = ImVec2((float)windows[windowIndex].Width / 3, (float)windows[windowIndex].Width / 3);
-			ImFramework::dpi_scale = dpi;
-			io.FontGlobalScale = dpi;
+			ImFramework::dpi_scale = 1.0f;
+			io.FontGlobalScale = 1.0f;
 		}
 	}
 

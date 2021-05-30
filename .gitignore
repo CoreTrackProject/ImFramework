@@ -35,3 +35,5 @@
 /Build/
 /vcpkg/
 /imgui/
+/.vs/
+/ImFramework/x64/

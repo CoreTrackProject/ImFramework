@@ -22,7 +22,8 @@ private:
     static std::unordered_map<std::string, GLuint> image_id_map;
 
 public:
-    static void Render(std::string markdown_str) {
+    
+    static void Render(std::string markdown_str, std::string work_dir = "") {
         std::istringstream str_stream(markdown_str.c_str());
 
         // TODO:
@@ -70,11 +71,39 @@ public:
                 str.find("(") != std::string::npos && 
                 str.find(")") != std::string::npos)
             {
+
                 auto begin_img_path = str.find("(");
                 auto end_img_path = str.find(")");
 
-                ImMarkdown::RenderImage(str.substr(begin_img_path, end_img_path - begin_img_path));
+                if (begin_img_path + 1 < end_img_path)
+                {
+                    // Get absolute path
+                    std::filesystem::path rel_path(
+                        // +1 to remove '(' and ')'
+                        str.substr(begin_img_path + 1, end_img_path - begin_img_path - 1)
+                    );
 
+                    std::string abs_path = "";
+                    if (work_dir.compare("") == 0) { 
+                        abs_path = std::filesystem::absolute(rel_path).string(); 
+                    }
+                    else
+                    {
+                        //remove dot slash ./ at beginning
+                        if (abs_path.substr(0, 2).compare("./") == 0) { 
+                            abs_path = abs_path.substr(1, abs_path.size() - 1);
+                        }
+
+                        abs_path = 
+                            work_dir + 
+                            rel_path.string(); 
+                    }
+
+                    
+                    std::replace(abs_path.begin(), abs_path.end(), '\\', '/');
+
+                    ImMarkdown::RenderImage(abs_path.c_str());
+                }
                 continue;
             }
 
@@ -91,6 +120,7 @@ public:
 
     static bool LoadTextureFromFile(const char* filename, GLuint* out_texture, int* out_width, int* out_height)
     {
+       
         // Load from file
         int            image_width  = 0;
         int            image_height = 0;
@@ -125,13 +155,14 @@ public:
         return true;
     }
 
-    static void RenderImage(std::string rel_path) { 
+    static void RenderImage(std::string abs_path)
+    { 
         static GLuint img_id = -1;
         static std::string last_path = "";
         static int width  = 0;
         static int height = 0;
 
-        if (rel_path.compare(last_path) != 0) {
+        if (abs_path.compare(last_path) != 0) {
 
             // cleanup last image
             if (img_id != -1)
@@ -140,13 +171,13 @@ public:
                 img_id = -1;
             }
 
-            if (!std::filesystem::exists(rel_path)) {
+            if (!std::filesystem::exists(abs_path)) {
                  GLuint texture = 0;
                  
                  // TODO: Convert relative path to absolute path
-                 if (LoadTextureFromFile(rel_path.c_str(), &texture, &width, &height)) { 
+                 if (LoadTextureFromFile(abs_path.c_str(), &texture, &width, &height)) { 
                      img_id = texture;
-                     last_path = rel_path;
+                     last_path = abs_path;
                  }
             }
         }
